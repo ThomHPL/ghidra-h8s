@@ -1,0 +1,56 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Sleigh compile",
+            "type": "shell",
+            "command": "D:\\ghidra_12.0_PUBLIC\\support\\sleigh.bat",
+            "args": [
+                ".\\data\\languages\\h8s_2000.slaspec"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Run Ghidra",
+            "type": "shell",
+            "command": "D:\\ghidra_12.0_PUBLIC\\ghidraRun.bat",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build Ghidra Extension",
+            "type": "shell",
+            "command": "gradle",
+            "args": [
+                "-PGHIDRA_INSTALL_DIR=D:\\ghidra_12.0_PUBLIC"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        }
+    ]
+}
