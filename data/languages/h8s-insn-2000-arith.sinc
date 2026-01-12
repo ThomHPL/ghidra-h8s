@@ -1,0 +1,3 @@
+@include "h8-insn-300h-arith.sinc"
+
+:tas "TOFIX @"^RS32^ is op24=0x01E07B; RS32 & nib_hi=0xC {}

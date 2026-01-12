@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ref: https://github.com/NationalSecurityAgency/ghidra/blob/Ghidra_10.4_build/Ghidra/Framework/SoftwareModeling/data/languages/processor_spec.rxg -->
+<processor_spec>
+	<programcounter register="pc" />
+
+	<register_data>
+		<register name="er0" />
+		<register name="er1" />
+		<register name="er2" />
+		<register name="er3" />
+		<register name="er4" />
+		<register name="er5" />
+		<register name="er6" />
+		<register name="sp" />
+		<register name="exr" />
+		<register name="ccr" />
+	</register_data>
+
+	<default_symbols>
+		<!-- Vectors -->
+		<symbol name="RESET" address="rom:000000" entry="true"  type="code_ptr"/>
+	</default_symbols>
+	<default_memory_blocks>
+		<memory_block name="rom" start_address="0x000000" length="0x80000" initialized="true"/>
+    	<memory_block name="dram" start_address="0xffdc00" length="0x2000" initialized="true"/>
+    	<memory_block name="io_register" start_address="0xfffffc00" length="0x400" initialized="false"/>
+	</default_memory_blocks>
+
+</processor_spec>

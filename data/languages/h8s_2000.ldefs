@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language_definitions>
+	<language id="h8s_2000:BE:32:normal" processor="H8S/2000" endian="big" size="32"
+	          version="0.1" variant="normal"
+	          slafile="h8s_2000.sla" processorspec="h8s_2000.pspec">
+		<description>Hitachi H8S/2000</description>
+		<compiler name="default" spec="h8s_2000.cspec" id="default" />
+	</language>
+</language_definitions>

@@ -1,0 +1,176 @@
+@include "h8-insn-300h-bit.sinc"
+
+
+:andc  IMM8, "exr" is op24=0x014106; IMM8            { exr = exr & IMM8; }
+:orc   IMM8, "exr" is op24=0x014104; IMM8            { exr = exr | IMM8; }
+:xorc  IMM8, "exr" is op24=0x014105; IMM8            { exr = exr ^ IMM8; }
+
+:b^BIT_INV^"and" BIT_IMM3, IMM16  is op16=0x6A10; IMM16; op=0x76; BIT_INV & BIT_IMM3  { 
+	local v = IMM16;
+	$(C) = (((v >> BIT_IMM3) & 1) != zext(BIT_INV)) & $(C);
+}
+
+:b^BIT_INV^"and" BIT_IMM3, IMM32  is op16=0x6A30; IMM32; op=0x76; BIT_INV & BIT_IMM3  { 
+	local v = IMM32;
+	$(C) = (((v >> BIT_IMM3) & 1) != zext(BIT_INV)) & $(C);
+}
+
+:bclr BIT_IMM3, IMM16 is op16=0x6A18; IMM16; op=0x72; bit_lo=0 & BIT_IMM3 {
+	local v = IMM16;
+	IMM16 = v & ~(1 << (BIT_IMM3 & 0b111));
+}
+
+:bclr BIT_IMM3, IMM32 is op16=0x6A38; IMM32; op=0x72; bit_lo=0 & BIT_IMM3 {
+	local v = IMM32;
+	IMM32 = v & ~(1 << (BIT_IMM3 & 0b111));
+}
+
+:bclr BIT_RS8, IMM16 is op16=0x6A18; IMM16; op=0x62; BIT_RS8 { 
+	local v = IMM16;
+	IMM16 = v & ~(1 << (BIT_RS8 & 0b111));
+}
+
+:bclr BIT_RS8, IMM32 is op16=0x6A38; IMM32; op=0x62; BIT_RS8 {
+	local v = IMM32;
+	IMM32 = v & ~(1 << (BIT_RS8 & 0b111));
+}
+
+:b^BIT_INV^"ld" BIT_IMM3, IMM16 is op16=0x6A10; IMM16; op=0x77; BIT_INV & BIT_IMM3 { 
+	local v = IMM16;
+	$(C) = ((v >> BIT_IMM3) & 1) != zext(BIT_INV);	
+}
+
+:b^BIT_INV^"ld" BIT_IMM3, IMM32 is op16=0x6A30; IMM32; op=0x77; BIT_INV & BIT_IMM3 { 
+	local v = IMM32;
+	$(C) = ((v >> BIT_IMM3) & 1) != zext(BIT_INV);	
+}
+
+:b^BIT_INV^"or" BIT_IMM3, IMM16   is op16=0x6A10; IMM16; op=0x74; BIT_INV & BIT_IMM3 {
+	local v = IMM16;
+	$(C) = (((v >> BIT_IMM3) & 1) != zext(BIT_INV)) | $(C);
+}
+
+:b^BIT_INV^"or" BIT_IMM3, IMM32   is op16=0x6A30; IMM32; op=0x74; BIT_INV & BIT_IMM3 {
+	local v = IMM32;
+	$(C) = (((v >> BIT_IMM3) & 1) != zext(BIT_INV)) | $(C);
+}
+
+:b^BIT_INV^"st" BIT_IMM3, IMM16   is op16=0x6A18; IMM16; op=0x67; BIT_INV & BIT_IMM3 {
+	local m = ~(1 << BIT_IMM3);
+	local x = ($(C) != BIT_INV) << BIT_IMM3;
+	local v = IMM16;
+	IMM16 = (v & m) | zext(x);
+}
+
+:b^BIT_INV^"st" BIT_IMM3, IMM32   is op16=0x6A38; IMM32; op=0x67; BIT_INV & BIT_IMM3 {
+	local m = ~(1 << BIT_IMM3);
+	local x = ($(C) != BIT_INV) << BIT_IMM3;
+	local v = IMM32;
+	IMM32 = (v & m) | zext(x);
+}
+
+:b^BIT_INV^"xor" BIT_IMM3, IMM16   is op16=0x6A10; IMM16; op=0x75; BIT_INV & BIT_IMM3 {
+	local v = IMM16;
+	$(C) = (((v >> BIT_IMM3) & 1) != zext(BIT_INV)) ^ $(C);
+}
+
+:b^BIT_INV^"xor" BIT_IMM3, IMM32   is op16=0x6A30; IMM32; op=0x75; BIT_INV & BIT_IMM3 {
+	local v = IMM32;
+	$(C) = (((v >> BIT_IMM3) & 1) != zext(BIT_INV)) ^ $(C);
+}
+
+:bnot BIT_IMM3, IMM16 is op16=0x6A18; IMM16; op=0x71; bit_lo=0 & BIT_IMM3 {
+	local v = IMM16;
+	IMM16 = v ^ (1 << (BIT_IMM3 & 0b111));
+}
+
+:bnot BIT_IMM3, IMM32 is op16=0x6A38; IMM32; op=0x71; bit_lo=0 & BIT_IMM3 {
+	local v = IMM32;
+	IMM32 = v ^ (1 << (BIT_IMM3 & 0b111));
+}
+
+:bnot BIT_RS8, IMM16 is op16=0x6A18; IMM16; op=0x61; BIT_RS8 { 
+	local v = IMM16;
+	IMM16 = v ^ (1 << (BIT_RS8 & 0b111));
+}
+
+:bnot BIT_RS8, IMM32 is op16=0x6A38; IMM32; op=0x61; BIT_RS8 {
+	local v = IMM32;
+	IMM32 = v ^ (1 << (BIT_RS8 & 0b111));
+}
+
+:bset BIT_IMM3, IMM16 is op16=0x6A18; IMM16; op=0x70; bit_lo=0 & BIT_IMM3 {
+	local v = IMM16;
+	IMM16 = v | (1 << (BIT_IMM3 & 0b111));
+}
+
+:bset BIT_IMM3, IMM32 is op16=0x6A38; IMM32; op=0x70; bit_lo=0 & BIT_IMM3 {
+	local v = IMM32;
+	IMM32 = v | (1 << (BIT_IMM3 & 0b111));
+}
+
+:bset BIT_RS8, IMM16 is op16=0x6A18; IMM16; op=0x60; BIT_RS8 {
+	local v = IMM16;
+	IMM16 = v | (1 << (BIT_RS8 & 0b111));
+}
+
+:bset BIT_RS8, IMM32 is op16=0x6A38; IMM32; op=0x60; BIT_RS8 {
+	local v = IMM32;
+	IMM32 = v | (1 << (BIT_RS8 & 0b111));
+}
+
+:btst BIT_IMM3, IMM32 is op16=0x6A30; IMM32; op=0x73; bit_lo=0 & BIT_IMM3 {
+	local v = IMM32;
+	local shifted = v >> (BIT_IMM3 & 0b111);
+	$(Z) = shifted:1;
+}
+
+:btst BIT_IMM3, IMM16 is op16=0x6A10; IMM16; op=0x73; bit_lo=0 & BIT_IMM3 {
+	local v = IMM16;
+	local shifted = v >> (BIT_IMM3 & 0b111);
+	$(Z) = shifted:1;
+}
+
+:btst BIT_IMM3, IMM16 is op16=0x6A10; IMM16; op=0x63; BIT_IMM3  {
+    local v = IMM16;
+	local shifted = v >> (BIT_IMM3 & 0b111);
+	$(Z) = shifted:1;
+}
+
+:btst BIT_IMM3, IMM32 is op16=0x6A30; IMM32; op=0x63; BIT_IMM3  {
+    local v = IMM32;
+	local shifted = v >> (BIT_IMM3 & 0b111);
+	$(Z) = shifted:1;
+}
+
+:shal.b  RD8 is op=0x10; op_lo=0xC & RD8 { instr_shift_aleft(RD8); }
+:shal.w RD16 is op=0x10; op_lo=0xD & RD16 { instr_shift_aleft(RD16); }
+:shal.l RD32 is op=0x10; op_lo=0xF & RD32 { instr_shift_aleft(RD32); }
+
+:shar.b  RD8 is op=0x11; op_lo=0xC & RD8 { instr_shift_aright(RD8); }
+:shar.w RD16 is op=0x11; op_lo=0xD & RD16 { instr_shift_aright(RD16); }
+:shar.l RD32 is op=0x11; op_lo=0xF & RD32 { instr_shift_aright(RD32); }
+
+:shll.b  RD8 is op=0x10; op_lo=0x4 & RD8 { instr_shift_left(RD8); }
+:shll.w RD16 is op=0x10; op_lo=0x5 & RD16 { instr_shift_left(RD16); }
+:shll.l RD32 is op=0x10; op_lo=0x7 & RD32 { instr_shift_left(RD32); }
+
+:shlr.b  RD8 is op=0x11; op_lo=0x4 & RD8 { instr_shift_right(RD8); }
+:shlr.w RD16 is op=0x11; op_lo=0x5 & RD16 { instr_shift_right(RD16); }
+:shlr.l RD32 is op=0x11; op_lo=0x7 & RD32 { instr_shift_right(RD32); }
+
+:rotl.b  RD8 is op=0x12; op_lo=0xC & RD8 { instr_rotl(RD8); }
+:rotl.w  RD16 is op=0x12; op_lo=0xD & RD16 { instr_rotl(RD16); }
+:rotl.l  RD32 is op=0x12; op_lo=0xF & RD32 { instr_rotl(RD32); }
+
+:rotr.b  RD8 is op=0x13; op_lo=0xC & RD8 { instr_rotr(RD8); }
+:rotr.w  RD16 is op=0x13; op_lo=0xD & RD16 { instr_rotr(RD16); }
+:rotr.l  RD32 is op=0x13; op_lo=0xF & RD32 { instr_rotr(RD32); }
+
+:rotxl.b RD8 is op=0x12; op_lo=0x4 & RD8 { instr_rotxl(RD8); }
+:rotxl.w RD16 is op=0x12; op_lo=0x5 & RD16 { instr_rotxl(RD16); }
+:rotxl.l RD32 is op=0x12; op_lo=0x7 & RD32 { instr_rotxl(RD32); }
+
+:rotxr.b RD8 is op=0x13; op_lo=0x4 & RD8 { instr_rotxr(RD8); }
+:rotxr.w RD16 is op=0x13; op_lo=0x5 & RD16 { instr_rotxr(RD16); }
+:rotxr.l RD32 is op=0x13; op_lo=0x7 & RD32 { instr_rotxr(RD32); }
