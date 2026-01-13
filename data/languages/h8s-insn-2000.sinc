@@ -82,11 +82,11 @@ STC_PTR: PTR24W is op24=0x6BA000; PTR24W { export PTR24W; }
 	STC_PTR = zext(ccr);
 }
 
-:stc.w "@("^DISP16^","^RSASET^")", "ccr" is op24=0x01406F; RSASET & nib_hi=0; DISP16 {
+:stc.w "ccr", "@("^DISP16^","^RSASET^")", is op24=0x01406F; RSASET & nib_hi=0; DISP16 {
 	*(RSASET + DISP16) = ccr;
 }
 
-:stc.w "@("^DISP32^","^RSA^")", "ccr" is op24=0x014078; RSA & nib_hi=0; op16=0x6BA0; DISP32 {
+:stc.w "ccr", "@("^DISP32^","^RSA^")" is op24=0x014078; RSA & nib_hi=0; op16=0x6BA0; DISP32 {
 	*(RSA + DISP32) = ccr;
 }
 
@@ -94,11 +94,11 @@ STC_PTR: PTR24W is op24=0x6BA000; PTR24W { export PTR24W; }
 	STC_PTR = zext(exr);
 }
 
-:stc.w "@("^DISP16^","^RSASET^")", "exr" is op24=0x01416F; RSASET & nib_hi=0; DISP16 {
+:stc.w "exr", "@("^DISP16^","^RSASET^")" is op24=0x01416F; RSASET & nib_hi=0; DISP16 {
 	*(RSASET + DISP16) = ccr;
 }
 
-:stc.w "@("^DISP32^","^RSA^")", "exr" is op24=0x014178; RSA & nib_hi=0; op16=0x6BA0; DISP32 {
+:stc.w "exr", "@("^DISP32^","^RSA^")" is op24=0x014178; RSA & nib_hi=0; op16=0x6BA0; DISP32 {
 	*(RSA + DISP32) = exr;
 }
 
@@ -124,11 +124,11 @@ STM_PTR: RD32 is op=0x6D; nib_lo = 0xF & RD32 { export RD32; }
 	sp = sp - 8;
 }
 
-:stm.l "TOFIX @sp+", "("^STM_PTR^"-)" is op16=0x0120; STM_PTR {
+:stm.l "TOFIX ("^STM_PTR^"-), @-sp" is op16=0x0120; STM_PTR {
 	sp = sp - 12;
 }
 
-:stm.l "TOFIX @sp+", "("^STM_PTR^"-)" is op16=0x0130; STM_PTR {
+:stm.l ""TOFIX ("^STM_PTR^"-), @-sp" is op16=0x0130; STM_PTR {
 	sp = sp - 16;
 }
 
