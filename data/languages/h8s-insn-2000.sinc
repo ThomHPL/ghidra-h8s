@@ -128,7 +128,7 @@ STM_PTR: RD32 is op=0x6D; nib_lo = 0xF & RD32 { export RD32; }
 	sp = sp - 12;
 }
 
-:stm.l ""TOFIX ("^STM_PTR^"-), @-sp" is op16=0x0130; STM_PTR {
+:stm.l "TOFIX ("^STM_PTR^"-), @-sp" is op16=0x0130; STM_PTR {
 	sp = sp - 16;
 }
 
