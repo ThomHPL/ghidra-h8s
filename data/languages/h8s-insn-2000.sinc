@@ -18,6 +18,7 @@ DEST24:   "@"^addr^":24"  is imm24 [ addr = 0 + imm24; ] { export *[ram]:$(ADDRS
 PTR24B:   "@"^addr^":8"   is imm24 [ addr = 0 + imm24; ] { export *[ram]:1 addr; }
 PTR24W:   "@"^addr^":16"  is imm24 [ addr = 0 + imm24; ] { export *[ram]:2 addr; }
 PTR24D:   "@"^addr^":32"  is imm24 [ addr = 0 + imm24; ] { export *[ram]:4 addr; }
+PTR32B:  "@"^imm32^":8"    is imm32 { export *[ram]:1 imm32; }
 
 RSPTRD:    "@"^rsA^":32"  is rsA & bit_lo=0 { export *:4 rsA; }
 RSPTRSD:   "@"^rsA^":32"  is rsA & bit_lo=1 { export *:4 rsA; }
