@@ -143,34 +143,113 @@
 	$(Z) = shifted:1;
 }
 
-:shal.b  RD8 is op=0x10; op_lo=0xC & RD8 { instr_shift_aleft(RD8); }
-:shal.w RD16 is op=0x10; op_lo=0xD & RD16 { instr_shift_aleft(RD16); }
-:shal.l RD32 is op=0x10; op_lo=0xF & RD32 { instr_shift_aleft(RD32); }
+macro rotl(val) {
+	local MSb:1 = val s< 0;
+	val = (val << 1);
+	val = val | zext(MSb);
+}
 
-:shar.b  RD8 is op=0x11; op_lo=0xC & RD8 { instr_shift_aright(RD8); }
-:shar.w RD16 is op=0x11; op_lo=0xD & RD16 { instr_shift_aright(RD16); }
-:shar.l RD32 is op=0x11; op_lo=0xF & RD32 { instr_shift_aright(RD32); }
+macro rotr(val) {
+	local LSb:1 = (val & 1) != 0;
+	val = (val >> 1);
+	sethi(val, LSb);
+}
 
-:shll.b  RD8 is op=0x10; op_lo=0x4 & RD8 { instr_shift_left(RD8); }
-:shll.w RD16 is op=0x10; op_lo=0x5 & RD16 { instr_shift_left(RD16); }
-:shll.l RD32 is op=0x10; op_lo=0x7 & RD32 { instr_shift_left(RD32); }
+macro rotxl(val) {
+	local c = $(C);
+	local MSb:1 = val s< 0;
+	$(C) = MSb;
+	val = (val << 1);
+	val = val | zext(c);
+}
 
-:shlr.b  RD8 is op=0x11; op_lo=0x4 & RD8 { instr_shift_right(RD8); }
-:shlr.w RD16 is op=0x11; op_lo=0x5 & RD16 { instr_shift_right(RD16); }
-:shlr.l RD32 is op=0x11; op_lo=0x7 & RD32 { instr_shift_right(RD32); }
+macro rotxr(val) {
+	local c = $(C);
+	local LSb:1 = (val & 1) != 0;
+	$(C) = LSb;
+	val = (val >> 1);
+	sethi(val, c);
+}
 
-:rotl.b  RD8 is op=0x12; op_lo=0xC & RD8 { instr_rotl(RD8); }
-:rotl.w  RD16 is op=0x12; op_lo=0xD & RD16 { instr_rotl(RD16); }
-:rotl.l  RD32 is op=0x12; op_lo=0xF & RD32 { instr_rotl(RD32); }
+macro instr_rotl_2(val) {
+	rotl(val);
+	$(C) = val s< 0;
+	rotl(val);
+}
 
-:rotr.b  RD8 is op=0x13; op_lo=0xC & RD8 { instr_rotr(RD8); }
-:rotr.w  RD16 is op=0x13; op_lo=0xD & RD16 { instr_rotr(RD16); }
-:rotr.l  RD32 is op=0x13; op_lo=0xF & RD32 { instr_rotr(RD32); }
+macro instr_rotxl_2(val) {
+	rotxl(val);
+	rotxl(val);
+}
 
-:rotxl.b RD8 is op=0x12; op_lo=0x4 & RD8 { instr_rotxl(RD8); }
-:rotxl.w RD16 is op=0x12; op_lo=0x5 & RD16 { instr_rotxl(RD16); }
-:rotxl.l RD32 is op=0x12; op_lo=0x7 & RD32 { instr_rotxl(RD32); }
+macro instr_rotr_2(val) {
+	rotr(val);
+	$(C) = (val & 1) != 0;
+	rotr(val);
+}
 
-:rotxr.b RD8 is op=0x13; op_lo=0x4 & RD8 { instr_rotxr(RD8); }
-:rotxr.w RD16 is op=0x13; op_lo=0x5 & RD16 { instr_rotxr(RD16); }
-:rotxr.l RD32 is op=0x13; op_lo=0x7 & RD32 { instr_rotxr(RD32); }
+macro instr_rotxr_2(val) {
+	rotxr(val);
+	rotxr(val);
+}
+
+macro instr_shift_left_2(val) {
+	local MSb:1 = val s< 0;
+	val = (val << 1);
+	$(C) = val s< 0;
+	val = (val << 1);
+	update_ZNV(val);
+}
+
+macro instr_shift_aleft_2(val) {
+	local old = val;
+	instr_shift_left_2(val);
+	$(V) = old > val;
+}
+
+macro instr_shift_right_2(val) {
+	local LSb:1 = (val & 1) != 0;
+	val = val >> 1;
+	$(C) = (val & 1) != 0;
+	val = val >> 1;
+	update_ZNV(val);
+}
+
+macro instr_shift_aright_2(val) {
+	local c = val s< 0;
+	instr_shift_right_2(val);
+	sethi(val, zext(c));
+	$(N) = c;
+}
+
+:shal.b "#2, "^RD8 is op=0x10; op_lo=0xC & RD8 { instr_shift_aleft_2(RD8); }
+:shal.w "#2, "^RD16 is op=0x10; op_lo=0xD & RD16 { instr_shift_aleft_2(RD16); }
+:shal.l "#2, "^RD32 is op=0x10; op_lo=0xF & RD32 { instr_shift_aleft_2(RD32); }
+
+:shar.b "#2, "^RD8 is op=0x11; op_lo=0xC & RD8 { instr_shift_aright_2(RD8); }
+:shar.w "#2, "^RD16 is op=0x11; op_lo=0xD & RD16 { instr_shift_aright_2(RD16); }
+:shar.l "#2, "^RD32 is op=0x11; op_lo=0xF & RD32 { instr_shift_aright_2(RD32); }
+
+:shll.b "#2, "^RD8 is op=0x10; op_lo=0x4 & RD8 { instr_shift_left_2(RD8); }
+:shll.w "#2, "^RD16 is op=0x10; op_lo=0x5 & RD16 { instr_shift_left_2(RD16); }
+:shll.l "#2, "^RD32 is op=0x10; op_lo=0x7 & RD32 { instr_shift_left_2(RD32); }
+
+:shlr.b "#2, "^RD8 is op=0x11; op_lo=0x4 & RD8 { instr_shift_right_2(RD8); }
+:shlr.w "#2, "^RD16 is op=0x11; op_lo=0x5 & RD16 { instr_shift_right_2(RD16); }
+:shlr.l "#2, "^RD32 is op=0x11; op_lo=0x7 & RD32 { instr_shift_right_2(RD32); }
+
+:rotl.b  "#2, "^RD8 is op=0x12; op_lo=0xC & RD8 { instr_rotl(RD8); }
+:rotl.w  "#2, "^RD16 is op=0x12; op_lo=0xD & RD16 { instr_rotl(RD16); }
+:rotl.l  "#2, "^RD32 is op=0x12; op_lo=0xF & RD32 { instr_rotl(RD32); }
+
+:rotr.b  "#2, "^RD8 is op=0x13; op_lo=0xC & RD8 { instr_rotr(RD8); }
+:rotr.w  "#2, "^RD16 is op=0x13; op_lo=0xD & RD16 { instr_rotr(RD16); }
+:rotr.l  "#2, "^RD32 is op=0x13; op_lo=0xF & RD32 { instr_rotr(RD32); }
+
+:rotxl.b "#2, "^RD8 is op=0x12; op_lo=0x4 & RD8 { instr_rotxl(RD8); }
+:rotxl.w "#2, "^RD16 is op=0x12; op_lo=0x5 & RD16 { instr_rotxl(RD16); }
+:rotxl.l "#2, "^RD32 is op=0x12; op_lo=0x7 & RD32 { instr_rotxl(RD32); }
+
+:rotxr.b "#2, "^RD8 is op=0x13; op_lo=0x4 & RD8 { instr_rotxr(RD8); }
+:rotxr.w "#2, "^RD16 is op=0x13; op_lo=0x5 & RD16 { instr_rotxr(RD16); }
+:rotxr.l "#2, "^RD32 is op=0x13; op_lo=0x7 & RD32 { instr_rotxr(RD32); }
