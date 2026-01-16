@@ -23,7 +23,7 @@
 	<default_memory_blocks>
 		<memory_block name="rom" start_address="0x000000" length="0x80000" initialized="true"/>
     	<memory_block name="dram" start_address="0xffdc00" length="0x2000" initialized="true"/>
-    	<memory_block name="io_register" start_address="0xfffffc00" length="0x400" initialized="false"/>
+    	<memory_block name="io_registers" start_address="0xfffc00" length="0x400" initialized="false"/>
 	</default_memory_blocks>
 
 </processor_spec>

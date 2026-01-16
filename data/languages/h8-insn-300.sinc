@@ -61,7 +61,8 @@ macro extdisp16(dest, val) {
 	dest = sext(val);
 }
 macro extdisp24(dest, val) {
-	dest = sext(val);
+	local d:3 = sext(val);
+	dest = zext(d);
 }
 @endif
 
@@ -95,9 +96,10 @@ RSADDR:      RSA      is RSA    { export RSA; }
 RSADDRSET:   RSASET   is RSASET { export RSASET; }
 
 RELPTR8: addr             is simm8 [ addr = inst_next + simm8; ] { export *[ram]:$(ADDRSIZE) addr; }
-PTR8B:   "@"^addr^":8"    is imm8  [ addr = 0xFFFFFF00 $or imm8; ] { export *[ram]:1 addr; }
+PTR8B:   "@"^addr^":8"    is imm8  [ addr = 0xFFFF00 $or imm8; ] { export *[ram]:1 addr; }
 
-@define SEXT_IMM16 "imm16 | ((imm16 >> 15) * (~0xffff))"
+# @define SEXT_IMM16 "imm16 | ((imm16 >> 15) * (~0xffff))"
+@define SEXT_IMM16 "imm16 | ((imm16 >> 15) * (~0xff00ffff))"
 
 DEST16:  "@"^addr^":24"   is imm16 [ addr = 0 + imm16; ]     { export *[ram]:$(ADDRSIZE) addr; }
 PTR16B:  "@"^addr^":8"    is imm16 [ addr = $(SEXT_IMM16); ] { export *[ram]:1 addr; }
